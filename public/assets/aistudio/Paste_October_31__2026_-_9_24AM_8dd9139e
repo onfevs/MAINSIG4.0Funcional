@@ -1,0 +1,862 @@
+# PROYECTO: MINERÍA LEGAL GIS COLOMBIA
+## Plataforma inteligente de evaluación de viabilidad jurídica, ambiental y territorial de áreas mineras en Colombia
+
+### 1. ROL Y OBJETIVO GENERAL
+
+Actúa como un equipo multidisciplinario integrado por:
+
+- Arquitecto de software especializado en aplicaciones geoespaciales.
+- Desarrollador GIS especializado en ArcGIS REST, WMS, WFS y PostGIS.
+- Geólogo especializado en exploración minera.
+- Abogado especializado en derecho minero colombiano.
+- Abogado especializado en derecho ambiental colombiano.
+- Especialista en ordenamiento territorial y determinantes ambientales.
+- Analista de datos y automatización de procesos geográficos.
+
+Necesito desarrollar una aplicación web profesional llamada MINERÍA LEGAL GIS COLOMBIA.
+
+Su objetivo es evaluar automáticamente cualquier placa, expediente, solicitud o polígono minero de Colombia, identificando las restricciones jurídicas, ambientales, territoriales, sociales y mineras que afectan su área.
+
+La aplicación debe responder con fundamento geográfico y normativo:
+
+1. ¿Es posible presentar una nueva propuesta de contrato de concesión minera sobre esta área?
+2. ¿Qué zonas están legalmente excluidas de la minería?
+3. ¿Qué zonas presentan restricciones mineras?
+4. ¿Qué zonas tienen condicionamientos ambientales?
+5. ¿Qué zonas requieren permisos, autorizaciones o procedimientos adicionales?
+6. ¿Qué zonas presentan conflictos con títulos o solicitudes mineras existentes?
+7. ¿Qué porcentaje y cantidad de hectáreas están afectadas?
+8. ¿Qué superficie no presenta restricciones detectadas?
+9. ¿Qué artículos, leyes, decretos, resoluciones y sentencias justifican cada resultado?
+10. ¿Qué entidades deben intervenir o emitir autorizaciones?
+
+La aplicación debe distinguir expresamente entre:
+- Presentación de una nueva propuesta minera.
+- Otorgamiento de un contrato de concesión.
+- Exploración minera.
+- Explotación minera.
+- Continuidad de títulos existentes.
+- Modificación o prórroga de títulos.
+- Obtención de licencia ambiental.
+- Cumplimiento de obligaciones ambientales.
+
+No asumir que una zona donde no se identifican restricciones ambientales es automáticamente adjudicable.
+
+### 2. FUENTES OFICIALES DE INFORMACIÓN
+
+#### A. Agencia Nacional de Minería (ANM)
+
+Integrar los servicios geográficos oficiales:
+
+WMS:
+https://geo.anm.gov.co/webgis/services/ANM/ServiciosGeograficosANM/MapServer/WMSServer?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities
+
+WFS:
+https://geo.anm.gov.co/webgis/services/ANM/ServiciosGeograficosANM/MapServer/WFSServer?SERVICE=WFS&REQUEST=GetCapabilities
+
+Servicios REST de AnnA Minería:
+
+https://annamineria.anm.gov.co/annageo/rest/services/SIGM/General_Base/MapServer
+
+https://annamineria.anm.gov.co/annageo/rest/services/SIGM/Cuadricula/MapServer
+
+https://annamineria.anm.gov.co/annageo/rest/services/SIGM/TenureLayers/MapServer
+
+https://annamineria.anm.gov.co/annageo/rest/services/SIGM/Exclusive_Restriction/MapServer
+
+Portal de AnnA Minería:
+https://annamineria.anm.gov.co/sigm/externalLogin#/extDashboard
+
+Metadatos:
+https://metadatos.anm.gov.co/geonetwork/
+
+REQUISITOS:
+
+- Consultar dinámicamente el catálogo de servicios.
+- Identificar todos los MapServer y FeatureServer disponibles.
+- Consultar los metadatos de cada servicio.
+- Obtener automáticamente los identificadores de las capas.
+- Obtener nombres, descripciones, geometrías, campos y sistemas de coordenadas.
+- Detectar capas de grupo y capas individuales.
+- Consultar las entidades mediante filtros espaciales.
+- Identificar los atributos que contienen nombres oficiales, categorías, identificadores, expedientes y actos administrativos.
+- No depender de nombres de capas previamente codificados.
+- No asumir que una capa contiene información jurídica únicamente por su nombre.
+- Detectar cambios en la estructura de los servicios.
+- Implementar paginación, control de límites de registros, reintentos, tiempos de espera y registros de errores.
+- Utilizar consultas espaciales para descargar únicamente los elementos que intersectan el polígono evaluado.
+- Guardar la fecha de consulta, servicio, capa y cantidad de registros obtenidos.
+
+La aplicación debe permitir administrar nuevas fuentes REST sin modificar el código principal.
+
+#### B. Fuentes ambientales y territoriales
+
+Implementar un catálogo de fuentes oficiales, incluyendo:
+
+1. RUNAP - Registro Único Nacional de Áreas Protegidas.
+2. Ministerio de Ambiente y Desarrollo Sostenible.
+3. Instituto de Investigación de Recursos Biológicos Alexander von Humboldt.
+4. IDEAM.
+5. IGAC.
+6. Autoridades ambientales regionales.
+7. Corporaciones Autónomas Regionales.
+8. ANLA.
+9. Servicio Geológico Colombiano.
+10. Entidades territoriales.
+11. Ministerio del Interior.
+12. Ministerio de las Culturas.
+13. Entidades responsables de territorios étnicos.
+
+Identificar y consultar, cuando existan servicios oficiales accesibles:
+
+- Páramos delimitados.
+- Complejos de páramos.
+- Parques Nacionales Naturales.
+- Parques Naturales Regionales.
+- Reservas Forestales Protectoras Nacionales.
+- Reservas Forestales Protectoras Regionales.
+- Reservas Forestales de Ley Segunda.
+- Humedales Ramsar.
+- Humedales delimitados.
+- Distritos de Manejo Integrado.
+- Distritos de Conservación de Suelos.
+- Reservas Naturales de la Sociedad Civil.
+- Áreas de Recreación.
+- Ecosistemas estratégicos.
+- Bosques secos tropicales.
+- Reservas de biosfera.
+- Áreas de importancia ambiental.
+- Áreas de protección hídrica.
+- Rondas hídricas, cuando exista delimitación oficial.
+- Zonas de recarga de acuíferos.
+- Áreas de protección de nacimientos.
+- Cuencas hidrográficas y POMCA.
+- Zonas de riesgo y amenaza.
+- Áreas de protección cultural y arqueológica.
+
+IMPORTANTE: No inventar endpoints, capas ni atributos. Cuando no exista un servicio disponible, registrar la fuente como pendiente de integración y permitir cargar archivos SHP, GPKG, GeoJSON o servicios WMS/WFS proporcionados por el usuario.
+
+### 3. MOTOR JURÍDICO MINERO COLOMBIANO
+
+Construir un motor de reglas normativas independiente del sistema de visualización cartográfica.
+
+El motor debe consultar y mantener una base jurídica actualizada.
+
+Fuentes normativas iniciales:
+
+- Ley 685 de 2001: Código de Minas.
+- Ley 1382 de 2010: antecedentes de modificación del Código de Minas, considerando su situación de vigencia y efectos jurídicos.
+- Ley 99 de 1993.
+- Ley 2 de 1959.
+- Ley 1930 de 2018: gestión integral de los páramos.
+- Ley 1450 de 2011.
+- Ley 1753 de 2015, considerando las decisiones de constitucionalidad aplicables.
+- Ley 70 de 1993.
+- Ley 21 de 1991.
+- Decreto 1076 de 2015.
+- Decreto 1073 de 2015.
+- Decreto 2372 de 2010, compilado en la normativa ambiental correspondiente.
+- Decreto 1077 de 2015, cuando corresponda a ordenamiento territorial.
+- Sentencia C-035 de 2016.
+- Demás sentencias, decretos, resoluciones y actos administrativos aplicables.
+
+No limitar la evaluación a esta lista. Identificar modificaciones, derogatorias, inexequibilidades, condicionamientos constitucionales y normas posteriores.
+
+#### 3.1. Artículo 34 - Zonas excluibles de minería
+
+Implementar las reglas del artículo 34 de la Ley 685 de 2001.
+
+Evaluar:
+
+- Áreas del Sistema de Parques Nacionales Naturales.
+- Parques Naturales Regionales.
+- Reservas forestales.
+- Otras áreas declaradas y delimitadas conforme a la normativa ambiental que expresamente excluyan trabajos mineros.
+
+No basta con detectar una intersección geográfica.
+
+Verificar:
+- Existencia de acto administrativo de declaratoria.
+- Autoridad competente.
+- Delimitación oficial.
+- Estudios técnicos y ambientales.
+- Régimen jurídico aplicable.
+- Alcance de la exclusión.
+- Vigencia del acto.
+- Excepciones o regímenes transitorios aplicables.
+
+La aplicación debe explicar por qué una intersección produce una exclusión minera.
+
+#### 3.2. Artículo 35 - Zonas de minería restringida
+
+Implementar una evaluación específica para las zonas descritas en el artículo 35.
+
+Considerar:
+
+- Perímetros urbanos.
+- Áreas ocupadas por construcciones rurales.
+- Zonas de especial interés arqueológico, histórico o cultural.
+- Playas y zonas de bajamar.
+- Otros supuestos previstos en el artículo y sus modificaciones vigentes.
+
+Para cada afectación identificar:
+- Condición jurídica.
+- Autorización requerida.
+- Autoridad competente.
+- Requisitos adicionales.
+- Posibilidad de desarrollar actividades bajo condiciones.
+
+No clasificar estas áreas como prohibición absoluta.
+
+#### 3.3. Artículo 36 - Efectos de las zonas de exclusión
+
+Evaluar las disposiciones vigentes relacionadas con zonas de exclusión y sus efectos sobre la actividad minera.
+
+Verificar el texto consolidado y su vigencia antes de implementar reglas.
+
+#### 3.4. Páramos
+
+Implementar una regla especial para ecosistemas de páramo.
+
+Consultar:
+
+- Ley 1930 de 2018, artículo 5.
+- Sentencia C-035 de 2016.
+- Actos administrativos oficiales de delimitación.
+- Cartografía del Ministerio de Ambiente.
+- Información técnica del Instituto Humboldt.
+
+Cuando un polígono intersecte un páramo oficialmente delimitado:
+
+- Identificar el complejo de páramo.
+- Identificar el acto administrativo de delimitación.
+- Calcular el área intersectada.
+- Calcular el porcentaje afectado.
+- Identificar el artículo que establece la prohibición minera.
+- Mostrar claramente que la exploración y explotación minera están prohibidas conforme al régimen aplicable.
+
+No confundir áreas de referencia de páramos con polígonos oficialmente delimitados.
+
+No considerar automáticamente una capa de referencia como una delimitación jurídica definitiva.
+
+#### 3.5. Reservas forestales
+
+Crear reglas independientes para:
+
+- Reservas Forestales Protectoras.
+- Reservas Forestales Protectoras Nacionales.
+- Reservas Forestales Protectoras Regionales.
+- Reservas Forestales de Ley Segunda.
+
+Evaluar:
+
+- Tipo de reserva.
+- Acto de declaración.
+- Zonificación.
+- Régimen de usos.
+- Posibilidad de sustracción.
+- Autoridad competente.
+- Procedimiento requerido.
+- Restricciones específicas para actividades mineras.
+
+No declarar que toda reserva forestal es automáticamente una zona de exclusión minera sin analizar su categoría y régimen jurídico.
+
+#### 3.6. Humedales
+
+Distinguir:
+
+- Humedales Ramsar.
+- Humedales delimitados.
+- Humedales inventariados.
+- Humedales identificados mediante información técnica.
+
+Verificar su régimen jurídico, delimitación y restricciones.
+
+No equiparar automáticamente un inventario de humedales con una delimitación jurídica que produzca prohibición minera.
+
+#### 3.7. Distritos de Manejo Integrado
+
+Para cada DMI consultar:
+
+- Resolución de declaratoria.
+- Plan de manejo ambiental.
+- Zonificación.
+- Zona de preservación.
+- Zona de restauración.
+- Zona de uso sostenible.
+- Régimen de actividades permitidas.
+- Restricciones particulares.
+
+No utilizar una clasificación única para todos los DMI.
+
+#### 3.8. Comunidades étnicas
+
+Identificar:
+
+- Resguardos indígenas.
+- Territorios indígenas.
+- Consejos comunitarios.
+- Territorios colectivos de comunidades negras.
+- Solicitudes de constitución o ampliación, cuando exista información oficial.
+- Áreas con procedimientos de consulta previa.
+
+Evaluar los derechos territoriales, las disposiciones del Convenio 169 de la OIT, la Ley 21 de 1991 y la Ley 70 de 1993.
+
+No clasificar automáticamente estas áreas como zonas excluidas de minería.
+
+Identificar cuándo procede consulta previa y qué entidad debe certificar o intervenir.
+
+#### 3.9. Otras restricciones
+
+Incorporar:
+
+- Zonas arqueológicas protegidas.
+- Bienes de interés cultural.
+- Zonas de seguridad nacional.
+- Áreas de reserva especial minera.
+- Zonas mineras indígenas.
+- Zonas mineras de comunidades negras.
+- Áreas estratégicas mineras.
+- Áreas con derechos mineros anteriores.
+- Áreas con solicitudes en evaluación.
+- Áreas de restitución de tierras.
+- Perímetros urbanos.
+- Ordenamiento territorial municipal.
+- Áreas con restricciones ambientales particulares.
+
+Cada figura debe tener su propia regla jurídica y no una clasificación general.
+
+### 4. SISTEMA DE CLASIFICACIÓN DE RESULTADOS
+
+Crear cuatro categorías principales.
+
+CATEGORÍA A: EXCLUSIÓN MINERA ACREDITADA.
+
+Color rojo.
+
+Utilizar exclusivamente cuando exista fundamento jurídico suficiente para concluir que la actividad minera evaluada está prohibida en la zona.
+
+Mostrar:
+- Figura jurídica.
+- Norma aplicable.
+- Artículo.
+- Acto administrativo.
+- Autoridad competente.
+- Área afectada.
+- Porcentaje de afectación.
+- Actividad prohibida.
+- Fecha de verificación.
+
+CATEGORÍA B: RESTRICCIÓN O CONDICIONAMIENTO.
+
+Color naranja.
+
+Utilizar cuando la actividad pueda estar sujeta a autorizaciones, condiciones, procedimientos especiales o restricciones de zonificación.
+
+Mostrar:
+- Tipo de restricción.
+- Requisito.
+- Autoridad competente.
+- Norma aplicable.
+- Procedimiento necesario.
+- Área afectada.
+
+CATEGORÍA C: SIN RESTRICCIÓN IDENTIFICADA EN LAS FUENTES CONSULTADAS.
+
+Color verde.
+
+Significa que no se identificaron exclusiones o restricciones en las fuentes evaluadas.
+
+No significa:
+- Derecho automático a obtener un título.
+- Garantía de adjudicación.
+- Aprobación de licencia ambiental.
+- Autorización para explorar o explotar.
+- Ausencia absoluta de condicionamientos.
+
+CATEGORÍA D: INFORMACIÓN INSUFICIENTE O NO DETERMINADA.
+
+Color gris.
+
+Utilizar cuando:
+- No exista cartografía oficial.
+- La fuente no esté disponible.
+- La delimitación sea incierta.
+- Los atributos sean insuficientes.
+- Exista contradicción entre fuentes.
+- No se haya podido verificar el acto administrativo.
+
+Nunca presentar una zona no evaluada como libre de restricciones.
+
+### 5. MÓDULO DE CONSULTA DE PLACAS
+
+La pantalla inicial debe contener:
+
+- Campo de búsqueda de placa.
+- Campo de búsqueda por expediente.
+- Opción para cargar SHP.
+- Opción para cargar GeoPackage.
+- Opción para cargar GeoJSON.
+- Botón de evaluación completa.
+- Indicador del estado de consulta.
+
+Ejemplo:
+
+DLK-113
+
+Al ingresar una placa:
+
+1. Consultar TenureLayers.
+2. Localizar el expediente.
+3. Identificar la geometría oficial.
+4. Obtener atributos del registro.
+5. Consultar su estado administrativo cuando la fuente lo permita.
+6. Identificar titular o solicitante cuando esté disponible.
+7. Calcular área.
+8. Identificar municipio, departamento y veredas.
+9. Validar el sistema de referencia.
+10. Ejecutar la evaluación espacial.
+
+No confundir el estado de una solicitud con el estado de un título vigente.
+
+Si no se encuentra la placa, solicitar al usuario cargar el polígono.
+
+### 6. MOTOR DE ANÁLISIS ESPACIAL
+
+Utilizar PostGIS, GeoPandas y Shapely.
+
+Sistema de coordenadas:
+
+- EPSG:9377 para análisis y cálculo de superficies en Colombia.
+- EPSG:4326 para intercambio y consultas de servicios que lo requieran.
+- Respetar el sistema de referencia original de cada servicio.
+
+Implementar:
+
+- Validación geométrica.
+- Corrección controlada de geometrías inválidas.
+- Reproyección.
+- Intersección.
+- Diferencia.
+- Unión geométrica.
+- Disolución.
+- Cálculo de hectáreas.
+- Cálculo de porcentajes.
+- Análisis de superposición múltiple.
+- Identificación de fragmentos.
+- Detección de geometrías vacías.
+
+Para cada capa calcular:
+
+Área de afectación (Ha).
+
+Porcentaje de afectación:
+
+(Área intersectada / Área total de la placa) × 100.
+
+IMPORTANTE:
+
+Cuando varias figuras se superpongan, no sumar directamente sus áreas para determinar la superficie total afectada.
+
+Calcular la unión geométrica de las zonas de exclusión y determinar el área única.
+
+Calcular por separado:
+
+1. Área total del polígono.
+2. Área con exclusiones mineras acreditadas.
+3. Área con restricciones condicionadas.
+4. Área con conflictos mineros.
+5. Área sin restricciones identificadas.
+6. Área no evaluada.
+7. Área de superposición entre diferentes figuras.
+
+No descontar las restricciones condicionadas como si fueran exclusiones absolutas.
+
+No llamar área libre a una superficie que únicamente carece de intersecciones detectadas.
+
+### 7. MOTOR DE CONFLICTOS MINEROS
+
+Consultar las capas oficiales de títulos y solicitudes.
+
+Identificar:
+
+- Títulos vigentes.
+- Solicitudes vigentes.
+- Solicitudes en evaluación.
+- Solicitudes rechazadas o archivadas, cuando existan registros.
+- Áreas de reserva especial.
+- Zonas mineras especiales.
+- Superposiciones entre derechos mineros.
+
+Para cada conflicto mostrar:
+
+- Número de expediente.
+- Placa.
+- Tipo de derecho minero.
+- Estado administrativo.
+- Titular o solicitante.
+- Área superpuesta.
+- Porcentaje.
+- Fuente oficial.
+- Fecha de consulta.
+
+Distinguir los derechos mineros de las restricciones ambientales.
+
+Una superposición con un título existente no debe clasificarse automáticamente como exclusión ambiental.
+
+La aplicación debe explicar si existe un conflicto que impide o condiciona una nueva propuesta, y exigir verificación del estado y régimen jurídico del expediente.
+
+### 8. EVALUACIÓN DE VIABILIDAD DE POSTULACIÓN
+
+Crear un módulo independiente llamado EVALUACIÓN DE NUEVA PROPUESTA MINERA.
+
+Este módulo debe evaluar específicamente si el área podría recibir una nueva propuesta de contrato de concesión.
+
+Considerar:
+
+- Exclusiones mineras.
+- Restricciones mineras.
+- Derechos mineros existentes.
+- Solicitudes anteriores.
+- Áreas reservadas.
+- Áreas estratégicas mineras.
+- Zonas de seguridad nacional.
+- Disponibilidad de cuadrículas.
+- Estado de las áreas en el sistema de la ANM.
+- Requisitos y condiciones establecidos por la normativa vigente.
+
+Generar uno de los siguientes resultados:
+
+1. NO VIABLE POR EXCLUSIÓN IDENTIFICADA.
+2. NO VIABLE POR CONFLICTO O DISPONIBILIDAD MINERA VERIFICADA.
+3. VIABILIDAD CONDICIONADA A VERIFICACIONES O AUTORIZACIONES.
+4. SIN IMPEDIMENTO IDENTIFICADO EN LA EVALUACIÓN PRELIMINAR.
+5. NO DETERMINABLE POR INFORMACIÓN INSUFICIENTE.
+
+La conclusión debe explicar qué impide, condiciona o permite continuar el proceso.
+
+No afirmar que un área es postulable únicamente porque no intersecta un páramo o parque natural.
+
+### 9. INTERFAZ Y EXPERIENCIA DEL USUARIO
+
+Diseñar una interfaz moderna, profesional y orientada a empresas mineras.
+
+Panel principal:
+
+- Buscador de placas.
+- Historial de evaluaciones.
+- Catálogo de servicios.
+- Estado de las fuentes.
+- Última actualización.
+- Estadísticas de consultas.
+
+Panel de resultados:
+
+PESTAÑA 1: RESUMEN EJECUTIVO.
+
+Mostrar:
+- Placa.
+- Expediente.
+- Estado.
+- Titular o solicitante.
+- Área total.
+- Municipio.
+- Departamento.
+- Resultado de evaluación.
+- Número de exclusiones.
+- Número de restricciones.
+- Número de conflictos mineros.
+
+PESTAÑA 2: MAPA INTERACTIVO.
+
+Mostrar:
+- Polígono evaluado.
+- Páramos.
+- Parques.
+- Reservas forestales.
+- Humedales.
+- DMI.
+- Comunidades étnicas.
+- Títulos mineros.
+- Solicitudes mineras.
+- Otras determinantes ambientales.
+
+Permitir:
+- Activar y desactivar capas.
+- Consultar atributos.
+- Consultar intersecciones.
+- Visualizar porcentajes.
+- Hacer zoom a cada afectación.
+- Consultar la leyenda.
+- Descargar geometrías.
+
+PESTAÑA 3: RESTRICCIONES AMBIENTALES.
+
+Crear una tabla con:
+
+- Figura ambiental.
+- Nombre oficial.
+- Categoría jurídica.
+- Norma.
+- Artículo.
+- Acto administrativo.
+- Área afectada.
+- Porcentaje.
+- Condición de aplicación.
+- Entidad competente.
+- Fuente.
+
+PESTAÑA 4: RESTRICCIONES MINERAS.
+
+Mostrar:
+- Títulos existentes.
+- Solicitudes.
+- Reservas especiales.
+- Áreas estratégicas.
+- Cuadrículas.
+- Conflictos identificados.
+
+PESTAÑA 5: ANÁLISIS NORMATIVO.
+
+Mostrar las normas aplicables y una explicación comprensible de cada artículo.
+
+PESTAÑA 6: INFORME TÉCNICO.
+
+Mostrar:
+- Metodología.
+- Fuentes.
+- Fecha de consulta.
+- Sistemas de coordenadas.
+- Resultados espaciales.
+- Limitaciones.
+- Advertencias jurídicas.
+
+### 10. MOTOR DE INTELIGENCIA JURÍDICA
+
+Implementar una base de datos de reglas jurídicas.
+
+Cada regla debe tener:
+
+- Identificador.
+- Nombre de la figura.
+- Tipo de restricción.
+- Norma.
+- Artículo.
+- Texto relevante.
+- URL oficial.
+- Fecha de expedición.
+- Fecha de entrada en vigencia.
+- Estado de vigencia.
+- Modificaciones.
+- Derogatorias.
+- Sentencias relacionadas.
+- Ámbito de aplicación.
+- Etapa minera afectada.
+- Condiciones de aplicación.
+- Excepciones.
+- Autoridad competente.
+- Evidencia requerida.
+
+El sistema debe permitir actualizar las reglas sin modificar el código de programación.
+
+No utilizar inteligencia artificial generativa como autoridad jurídica.
+
+La inteligencia artificial podrá explicar las normas, pero el resultado debe provenir de reglas estructuradas y fuentes verificables.
+
+Toda conclusión jurídica debe incluir la disposición legal que la respalda.
+
+Si no se puede establecer una conclusión, indicar expresamente que requiere revisión jurídica.
+
+### 11. INFORMES AUTOMÁTICOS
+
+Generar tres productos:
+
+A. INFORME EJECUTIVO PDF.
+
+Debe contener:
+- Datos de la placa.
+- Resumen de viabilidad.
+- Mapa general.
+- Restricciones identificadas.
+- Tabla de áreas.
+- Conclusiones.
+- Advertencias.
+
+B. INFORME DETALLADO EXCEL.
+
+Hojas:
+
+1. Resumen_Ejecutivo.
+2. Restricciones_Ambientales.
+3. Restricciones_Mineras.
+4. Conflictos_Titulares.
+5. Detalle_Intersecciones.
+6. Normativa_Aplicable.
+7. Fuentes_Consultadas.
+8. Control_Calidad.
+
+C. GEOPACKAGE.
+
+Incluir:
+- Polígono evaluado.
+- Exclusiones.
+- Restricciones condicionadas.
+- Conflictos mineros.
+- Intersecciones.
+- Superficie sin restricciones identificadas.
+- Información territorial.
+
+Todas las capas deben incluir atributos de identificación, fuente y fecha de consulta.
+
+### 12. CONTROL DE CALIDAD Y TRAZABILIDAD
+
+Implementar un sistema de auditoría.
+
+Registrar:
+- Fecha y hora.
+- Usuario.
+- Placa.
+- Servicio consultado.
+- Capa.
+- URL.
+- Cantidad de registros.
+- Errores.
+- Sistema de referencia.
+- Versión de las reglas jurídicas.
+- Fecha de actualización normativa.
+
+Implementar alertas cuando:
+
+- Un servicio esté fuera de línea.
+- Una capa no tenga geometrías.
+- Existan atributos faltantes.
+- Se detecten geometrías inválidas.
+- Exista información desactualizada.
+- Una capa no pueda consultarse.
+- Se presenten diferencias entre fuentes.
+
+La aplicación debe informar qué capas fueron consultadas exitosamente y cuáles no.
+
+### 13. SEGURIDAD Y ADMINISTRACIÓN
+
+Crear roles:
+
+- Administrador.
+- Profesional SIG.
+- Profesional de Tenements.
+- Abogado.
+- Usuario de consulta.
+
+El administrador podrá:
+- Registrar servicios.
+- Actualizar reglas.
+- Agregar nuevas capas.
+- Actualizar fuentes jurídicas.
+- Consultar auditorías.
+- Gestionar usuarios.
+
+### 14. ARQUITECTURA TÉCNICA
+
+Backend:
+Python + FastAPI.
+
+Frontend:
+React + TypeScript.
+
+Base de datos:
+PostgreSQL + PostGIS.
+
+Análisis:
+GeoPandas, Shapely, PyProj y GDAL.
+
+Visualización:
+MapLibre GL JS.
+
+Procesamiento:
+Sistema de tareas asíncronas para consultas extensas.
+
+Informes:
+ReportLab y OpenPyXL.
+
+Implementar API REST propia para separar la interfaz, los servicios geográficos y el motor jurídico.
+
+### 15. METODOLOGÍA DE DESARROLLO
+
+No construir todo en una sola operación.
+
+Desarrollar por fases:
+
+FASE 1:
+Conexión a los servicios de AnnA Minería y descubrimiento de todas las capas.
+
+FASE 2:
+Consulta de placas y obtención de polígonos.
+
+FASE 3:
+Integración de fuentes ambientales oficiales.
+
+FASE 4:
+Motor de análisis espacial y cálculo de áreas.
+
+FASE 5:
+Base de datos jurídica y motor de reglas.
+
+FASE 6:
+Evaluación de postulabilidad minera.
+
+FASE 7:
+Interfaz gráfica y mapa interactivo.
+
+FASE 8:
+Informes PDF, Excel y GeoPackage.
+
+FASE 9:
+Validación jurídica y pruebas espaciales con expedientes conocidos.
+
+FASE 10:
+Despliegue y documentación.
+
+Al terminar cada fase, presentar:
+- Componentes implementados.
+- Pruebas ejecutadas.
+- Errores encontrados.
+- Fuentes integradas.
+- Funcionalidades pendientes.
+
+No utilizar datos ficticios para simular resultados reales.
+
+### 16. CONDICIÓN FUNDAMENTAL DEL PROYECTO
+
+La aplicación no debe ser un simple sistema de semaforización de capas.
+
+Debe convertirse en un SISTEMA DE APOYO A LA DECISIÓN MINERO-AMBIENTAL Y JURÍDICA PARA COLOMBIA.
+
+Cada resultado debe poder responder:
+
+¿QUÉ FIGURA AFECTA EL ÁREA?
+
+¿DÓNDE ESTÁ UBICADA?
+
+¿CUÁNTAS HECTÁREAS AFECTA?
+
+¿QUÉ PORCENTAJE REPRESENTA?
+
+¿QUÉ NORMA LA REGULA?
+
+¿QUÉ ARTÍCULO ESTABLECE LA RESTRICCIÓN?
+
+¿QUÉ AUTORIDAD TIENE COMPETENCIA?
+
+¿SE PUEDE PRESENTAR UNA PROPUESTA MINERA?
+
+¿SE PUEDE EXPLORAR?
+
+¿SE PUEDE EXPLOTAR?
+
+¿QUÉ PROCEDIMIENTO O AUTORIZACIÓN SE NECESITA?
+
+¿QUÉ INFORMACIÓN FALTA PARA EMITIR UNA CONCLUSIÓN?
+
+La respuesta debe ser comprensible para un profesional de Tenements, un geólogo, un ingeniero ambiental y un abogado.
+
+Priorizar siempre la exactitud jurídica, la integridad de la información geográfica y la trazabilidad de los resultados por encima de la apariencia visual de la aplicación.

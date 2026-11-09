@@ -1,0 +1,6 @@
+{
+  "name": "Minería Legal GIS Colombia",
+  "description": "Plataforma inteligente de evaluación de viabilidad jurídica, ambiental y territorial de áreas mineras en Colombia con cruce oficial ANM, RUNAP y determinantes ambientales.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
